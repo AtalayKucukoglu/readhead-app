@@ -1,0 +1,5 @@
+/venv/
+/.idea
+/.vscode
+/src/db/cool_sql_commands.txt
+/src/db/tasks.txt
