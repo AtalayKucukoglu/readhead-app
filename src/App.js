@@ -1,25 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import { Grid } from '@material-ui/core'
+import React, { Component } from 'react'
+import { Route, BrowserRouter as Router, Link, Switch } from 'react-router-dom'
+import './App.css'
+import Header from './components/Header'
+import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage'
+import ProfilePage from './pages/ProfilePage'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class App extends Component {
+  render() {
+    return (
+      <Router>
+        <div className='app-container'>
+          <Header />
+          <Switch>
+            <Route path='/register' component={RegisterPage} />
+            <Route path='/login' component={LoginPage} />
+            <Route path='/users/:username' component={ProfilePage} />
+          </Switch>
+        </div>
+      </Router>
+    )
+  }
 }
-
-export default App;

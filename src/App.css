@@ -1,38 +1,123 @@
-.App {
-  text-align: center;
+html {
+	scroll-behavior: smooth;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+html, body {
+  width: auto !important; 
+  overflow-x: hidden !important;
+  background-color: #E9EAEB;
+  font-family: 'SofiaPro' sans-serif;
+  font-size: 14px;
+  line-height: 17px;
+} 
+
+.header {
+  background-color: #02063F;
+  height: 8vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10vw 0 10vw;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.header-logo {
+  height: auto;
+  width: 100px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.app-container {
+  background-color: #E9EAEB;
   display: flex;
   flex-direction: column;
-  align-items: center;
+}
+
+.page-container {
+  display: flex;
+  margin-top: 20px;
+  height: 80vh;
+  max-height: 800px;
+  width: 80vw;
+  max-width: 1200px;
+  min-width: 375px;
+  background-color: #fff;
+  align-self: center;
+  border-radius: 10px;
+  padding: 10px
+}
+
+.card-container {
+  height: inherit;
+  padding: 10px;
+  overflow: auto; 
+  overflow-x: hidden !important;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.06) 0px 4px 8px;
+  margin-bottom: 10px
+}
+
+.list-item:hover {
+  background-color: #E9EAEB;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.jc-center {
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.jc-sb {
+  justify-content: space-between;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.ai-center {
+  align-items: center;
 }
+
+.mx-1 {
+  margin-right: 0.5em !important;
+  margin-left: 0.5em !important;
+}
+
+.my-1 {
+  margin-top: 0.5em !important;
+  margin-bottom: 0.5em !important;
+}
+
+.mb-1 {
+  margin-bottom: 0.5em !important;
+}
+
+.mt-1 {
+  margin-top: 0.5em !important;
+}
+
+.px-1 {
+  padding-right: 0.5em !important;
+  padding-left: 0.5em !important;
+}
+
+.py-1 {
+  padding-top: 0.5em !important;
+  padding-bottom: 0.5em !important;
+}
+
+.pb-1 {
+  padding-bottom: 0.5em !important;
+}
+
+.pt-1 {
+  padding-top: 0.5em !important;
+}
+
+
+
