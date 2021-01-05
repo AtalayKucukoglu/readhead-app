@@ -1,7 +1,7 @@
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from psycopg2.extensions import AsIs
-from src.db.connection import execute_statement
+from server.db.connection import execute_statement
 from app import app
 from flask import jsonify, request, abort
 
@@ -14,17 +14,11 @@ def get_book_with_id(book_id):
 
 # FIXME
 @app.route('/api/books/search', methods=['GET'])
-def search_books(value):
-    val = '%' + value + '%'
-    with psycopg2.connect(dsn) as connection:
-        cursor = connection.cursor()
-        statement = """SELECT * from books 
-                            WHERE title LIKE (%s) """
-        cursor.execute(statement, val)
-        data = cursor.fetchall()
-        cursor.close()
-        return data
-
+def search_books():
+    req = request.json
+    statement = """select * from books where lower(title) like """
+    print(statement)
+    return "ok"
 @app.route('/api/books/create', methods=['POST'])
 def create_book():
     req = request.json

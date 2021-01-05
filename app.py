@@ -3,29 +3,23 @@
 
 
 from flask import Flask, jsonify
-from src.db.connection import db_connect
+from server.db.connection import db_connect
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = "\xa3~\x84\x18\r\xa0\xf9\xe4c\xea\x8c\xdeX\x7f\xd8\x1d\xce$O~\xf30i&"
 
-import src.db.books
-import src.db.users
-import src.db.authors
+import server.db.books
+import server.db.users
+import server.db.authors
 
 @app.route('/')
 def hello_world():
     return 'Hello World!'
-
-# @app.route('/api/books/<book_id>')
-# def get_book_with_id(book_id):
-#     book = db.books.get_book_with_id(book_id)
-#     return jsonify(book)
 
 @app.route('/connect')
 def connect():
     db_connect()
     return 'connect page'
 
-
 if __name__ == '__main__':
-    db_connect()
     app.run(debug=True)

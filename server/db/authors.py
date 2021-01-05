@@ -1,7 +1,7 @@
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from psycopg2.extensions import AsIs
-from src.db.connection import execute_statement
+from server.db.connection import execute_statement
 from app import app
 from flask import jsonify, request, abort
 

@@ -1,13 +1,17 @@
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from psycopg2.extensions import AsIs
-from src.db.connection import execute_statement,  dsn
+from server.db.connection import execute_statement,  dsn
+from server.authentication import is_authenticated, token_required
+from server.users import get_user
 from app import app
 from flask import jsonify, request, abort
+from werkzeug.security import generate_password_hash
 
+# TODO use classes for user, book, author
 
 def register_has_errors(user):
-    if not user or 'username' not in user or 'email' not in user:
+    if not user or 'username' not in user or 'email' not in user or 'password' not in user:
         return False
     else:
         return True
@@ -21,20 +25,38 @@ def create_user():
     print(user_data)
     if not register_has_errors(user_data):
         abort(400)
+    hashed_password = generate_password_hash(user_data['password'], 'pbkdf2:sha512')
     with psycopg2.connect(dsn) as connection:
         cursor = connection.cursor(cursor_factory=RealDictCursor)
-        statement = """insert into users (email, username, gender, birth_date, goal_book_count, goal_start_date, goal_end_date)
-                            values (%s, %s, %s, %s, null, null, null);"""
-        cursor.execute(statement, (user_data['email'], user_data['username'], user_data['gender'], user_data['birth_date']))
+        statement = """insert into users (email, username, hashed_password, gender, birth_date)
+                            values (%s, %s, %s, %s, %s);"""
+        cursor.execute(statement, (user_data['email'], user_data['username'], hashed_password,
+                                   user_data['gender'], user_data['birth_date']))
         cursor.execute("""select * from users
                             where (email = %s and username = %s )""", (user_data['email'], user_data['username']))
         created_user = cursor.fetchone()
         return jsonify(created_user), 201
 
+# TODO: login with username and password
+
+@app.route('/api/users/login', methods=['GET'])
+def login():
+    user = get_user(username=request.authorization.username)
+    print(request.authorization.username)
+    print(request.authorization['username'])
+    print('user: ', user)
+    print(user['username'])
+    token = is_authenticated(request, user)
+    print("token: ", token)
+    if token:
+        return jsonify({'token': token}), 201
+    else:
+        abort(401)
 
 # get user
 # TODO: auth
 @app.route('/api/users/<username>', methods=['GET'])
+@token_required
 def get_user_with_username(username):
     with psycopg2.connect(dsn) as connection:
         cursor = connection.cursor(cursor_factory=RealDictCursor)
@@ -44,17 +66,6 @@ def get_user_with_username(username):
         user = cursor.fetchone()
         cursor.close()
         return jsonify(user)
-
-
-def get_user(username):
-    with psycopg2.connect(dsn) as connection:
-        cursor = connection.cursor(cursor_factory=RealDictCursor)
-        statement = """SELECT * FROM users
-                            WHERE (username = %s)"""
-        cursor.execute(statement, (username,))
-        user = cursor.fetchone()
-        cursor.close()
-        return user
 
 
 @app.route('/api/users', methods=['GET'])
