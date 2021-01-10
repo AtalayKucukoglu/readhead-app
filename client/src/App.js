@@ -6,20 +6,24 @@ import Header from './components/Header'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import ProfilePage from './pages/ProfilePage'
+import HomePage from './pages/HomePage'
 
 export default class App extends Component {
+
   render() {
     return (
       <Router>
         <div className='app-container'>
           <Header />
           <Switch>
-            <Route path='/register' component={RegisterPage} />
-            <Route path='/login' component={LoginPage} />
-            <Route path='/users/:username' component={ProfilePage} />
+            <Route exact path='/' component={HomePage} />
+            <Route exact path='/register' component={RegisterPage} />
+            <Route exact path='/login' component={LoginPage} />
+            <Route exact path='/users/:username' component={ProfilePage} />
           </Switch>
         </div>
       </Router>
     )
   }
+
 }
