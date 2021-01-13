@@ -2,11 +2,12 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from psycopg2.extensions import AsIs
 from server.db.connection import execute_statement,  dsn
-from server.authentication import is_authenticated, token_required
+from server.authentication import is_authenticated, token_required, is_token_valid
 from server.users import get_user
 from app import app
 from flask import jsonify, request, abort
 from werkzeug.security import generate_password_hash
+from server.db.errors import Unauthorized
 
 # TODO use classes for user, book, author
 
@@ -39,33 +40,41 @@ def create_user():
 
 # TODO: login with username and password
 
-@app.route('/api/users/login', methods=['GET'])
+@app.route('/api/users/login', methods=['POST'])
 def login():
-    user = get_user(username=request.authorization.username)
-    print(request.authorization.username)
-    print(request.authorization['username'])
-    print('user: ', user)
-    print(user['username'])
+    user = get_user(username=request.json['username'])
     token = is_authenticated(request, user)
-    print("token: ", token)
     if token:
-        return jsonify({'token': token}), 201
+        return jsonify({'token': token, 'status': True, 'data': user}), 201
     else:
-        abort(401)
+        return jsonify({'status': False, 'message': 'Username or password is not correct.'})
+        # raise Unauthorized('Username or password is not correct.')
+
+@app.route('/api/users/check_token', methods=['GET'])
+@token_required       
+def check_token():
+    token = request.headers['Authorization']
+    user = is_token_valid(token)  
+    if not user:
+        return jsonify({'error': 'Unauthorized', 'status': False, 'authentication': False}), 401
+    else:
+        return jsonify({'status': True, 'data': user}), 200
+
+
 
 # get user
 # TODO: auth
 @app.route('/api/users/<username>', methods=['GET'])
 @token_required
 def get_user_with_username(username):
-    with psycopg2.connect(dsn) as connection:
-        cursor = connection.cursor(cursor_factory=RealDictCursor)
-        statement = """SELECT * FROM users
+    
+    statement = """SELECT * FROM users
                             WHERE (username = %s)"""
-        cursor.execute(statement, (username,))
-        user = cursor.fetchone()
-        cursor.close()
-        return jsonify(user)
+    user = execute_statement(statement, (username,), True, False)
+    
+    if not user:
+        return jsonify({'status': False, 'message': "There is no such user: " + username + "."})
+    return jsonify({'status': True, 'data': user}), 200
 
 
 @app.route('/api/users', methods=['GET'])
