@@ -1,3 +1,4 @@
+import { setAuthorizationToken } from '../helpers/helpers';
 import * as authServices from '../services/authServices';
 
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
@@ -19,19 +20,39 @@ const loginError = error => {
     };
 };
 
-export const login = (username, password) => {
-    console.log("login action called")
+export const login = (username, password, token = null) => {
+    // try login via authorized token
+    if (token && !username && !password) {
+        console.log("login action try via token")
+        return dispatch => {
+            authServices.isTokenValid(token)
+                .then(res => {
+                    console.log("login action data: ", res)
+                    if (res.status) {
+                        return dispatch(loginSuccess(res.data))
+                    }
+                    else {
+                        return dispatch(loginError(''))
+                    }
+                })
+        }
+    }
     return dispatch => {
         authServices.login(username, password)
-            .then(data => {
-                console.log("response from login service: ", data)
-                if (!data) {
+            .then(res => {
+                console.log("response from login service: ", res)
+                if (!res) {
                     dispatch(loginError(defaultErrorMessage))
                     return
                 }
-                !data.status
-                    ? dispatch(loginError(data.message || defaultErrorMessage))
-                    : (dispatch(loginSuccess(data)))
+                if (!res.status) {
+                    return dispatch(loginError(res.message || defaultErrorMessage))
+                }
+                else {
+                    console.log(res.token)
+                    setAuthorizationToken(res.token)
+                    return dispatch(loginSuccess(res.data))
+                }
             })
             .catch(err => dispatch(loginError(err)));
     }
