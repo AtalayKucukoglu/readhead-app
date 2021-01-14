@@ -19,14 +19,38 @@ export const logout = () => {
 }
 
 export const isTokenValid = (token) => {
-	console.log("istokenvalid func")
 	return axios.get('/users/check_token')
 		.then(res => {
 			if (!res || !res.status) return false
-			console.log(res.data)
 			return res.data
 		})
 		.catch(err =>
 			console.log(err)
 		)
+}
+
+export const register = (user) => {
+	const body = {
+		'username': user.username,
+		'email': user.email,
+		'password': user.password,
+		'birth_date': user.birthdate,
+		'gender': user.gender
+	}
+	console.log(body)
+	return axios.post('/users/register', {
+		'username': user.username,
+		'email': user.email,
+		'password': user.password,
+		'birth_date': user.birthdate,
+		'gender': user.gender
+	})
+		.then(response => {
+			console.log("response: ", response)
+			if (!response) return {}
+			return response.data;
+		})
+		.catch(err =>
+			console.log(err)
+		);
 }

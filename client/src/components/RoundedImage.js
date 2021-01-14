@@ -8,6 +8,7 @@ export default function RoundedImage(props) {
       display: 'flex',
       height: props.height || defaultSize,
       width: props.height ? 'auto' : defaultSize,
+      cursor: 'pointer',
     },
     image: {
       objectFit: 'cover',
@@ -19,7 +20,7 @@ export default function RoundedImage(props) {
   }
 
   return (
-    <div style={styles.wrapper}>
+    <div style={styles.wrapper} onClick={props.onClick || null}>
       <img style={styles.image} src={props.src} alt={props.alt} />
     </div>
   )

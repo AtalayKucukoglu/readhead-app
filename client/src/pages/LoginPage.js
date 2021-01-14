@@ -1,8 +1,10 @@
-import { Button, Grid, TextField, Typography, Link, CircularProgress } from '@material-ui/core'
+import { Button, Grid, TextField, Typography, Link } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import React, { Component } from 'react'
 import { connect } from "react-redux";
 import { login, logout } from "../actions/authAction";
+import LoadingIcon from '../components/LoadingIcon';
+import { mapStateToProps } from '../helpers/helpers';
 
 class LoginPage extends Component {
 
@@ -29,7 +31,7 @@ class LoginPage extends Component {
     }
 
     if (this.responseReceived() && isLoading) this.setState({ isLoading: false })
-
+    console.log(this.responseReceived(), isLoading)
     return (
       <div className='page-container jc-center ai-center'>
         <Grid item className='px-1 py-1' xs={8} s={6} md={6} lg={4} xl={3}>
@@ -41,14 +43,14 @@ class LoginPage extends Component {
               <Alert severity="error">{errorMessage}</Alert>
           }
           <form className='flex-column my-1'>
-            <TextField className='mb-1' required variant='outlined' label='Username' type='text'
-              value={this.state.username} onChange={ev => this.handleUsernameChange(ev.target.value)} />
-            <TextField className='mb-1' required variant='outlined' label='Password' type='password'
-              value={this.state.password} onChange={ev => this.handlePasswordChange(ev.target.value)} />
+            <TextField className='mb-1' required variant='outlined' label='Username' type='text' name='username'
+              value={this.state.username} onChange={this.handleChange} />
+            <TextField className='mb-1' required variant='outlined' label='Password' type='password' name='password'
+              value={this.state.password} onChange={this.handleChange} />
           </form>
           <div className='jc-center flex-column' >
-            <Button className='mb-1' color='primary' variant='contained' onClick={this.handleLogin} >
-              {this.state.isLoading ? <CircularProgress size={20} color="#ffffff" /> : "Login"}
+            <Button disabled={!this.isLoginFormFilled()} className='mb-1' color='primary' variant='contained' onClick={this.handleLogin} >
+              {this.state.isLoading ? <LoadingIcon size='sm' /> : "Login"}
             </Button>
             <Link variant='body1' href='/register' >
               Not registered yet? Register now!
@@ -59,16 +61,17 @@ class LoginPage extends Component {
     )
   }
 
-  handleUsernameChange = (value) => {
-    this.setState({ username: value })
+  isLoginFormFilled = () => {
+    return this.state.username && this.state.password
   }
 
-  handlePasswordChange = (value) => {
-    this.setState({ password: value })
+  handleChange = (ev) => {
+    this.setState({ [ev.target.name]: ev.target.value
+    })
   }
-
 
   handleLogin = e => {
+    if (!this.isLoginFormFilled()) return
     e.preventDefault();
     this.setState({ isLoading: true })
     const { dispatch } = this.props;
@@ -76,25 +79,12 @@ class LoginPage extends Component {
     console.log("before dispatch")
     dispatch(login(username, password));
     console.log("after dispatch")
-
   }
 
   responseReceived = () => {
-    // console.log("response received props: ", this.props)
-    // console.log("returns: ", this.props.user.hasOwnProperty('status'))
-    return this.props.user.username
+    return this.props.isAuthenticated || this.props.error
   }
 }
 
-const mapStateToProps = (state) => {
-  console.log("login maps to props state: ", state)
-  const { isAuthenticated, error, errorMessage, user } = state.auth;
-  return {
-    isAuthenticated,
-    error,
-    errorMessage,
-    user
-  }
-}
 
 export default connect(mapStateToProps)(LoginPage)
