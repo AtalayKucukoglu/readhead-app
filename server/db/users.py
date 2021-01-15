@@ -9,18 +9,28 @@ from flask import jsonify, request, abort
 from werkzeug.security import generate_password_hash
 from server.db.errors import Unauthorized
 
-# TODO use classes for user, book, author
+# TODO use classes for user, book, author  
+
+def is_unique(table, column, value):
+    statement = "select * from %s where (%s = %s) limit 1;" 
+    params = (AsIs(table), AsIs(column), value)
+    data = execute_statement(statement, params, True, False)
+    print("is unique: ", data)
+    return
+    
 
 def register_has_errors(user):
     if not user or 'username' not in user or 'email' not in user or 'password' not in user:
         return False
-    else:
-        return True
+    is_unique('users', 'username', user['username'])
+    return True
 
 # {"username": "wadawada", "email": "wadawada@wadawada.com", "gender": "M", "birth_date": "1999-01-28"}
 
+# TODO: does registered user has unique email and username?
+
 # create user
-@app.route('/api/users/create', methods=['POST'])
+@app.route('/api/users/register', methods=['POST'])
 def create_user():
     user_data = request.json
     print(user_data)
@@ -36,7 +46,7 @@ def create_user():
         cursor.execute("""select * from users
                             where (email = %s and username = %s )""", (user_data['email'], user_data['username']))
         created_user = cursor.fetchone()
-        return jsonify(created_user), 201
+        return jsonify({'token':'', 'status': True, 'data': created_user}), 201
 
 # TODO: login with username and password
 
@@ -110,10 +120,18 @@ def get_list(username, list_name):
     if not user:
         abort(404)
     tables = {'favorites': 'users_favorites', 'have-read': 'users_have_read', 'to-read': 'users_to_read'}
-    statement = """select * from %s
-                        where (user_id = %s)"""
-    data = execute_statement(statement, (AsIs(tables[list_name]), user['user_id']), True)
-    return jsonify(data), 200
+    statement = """
+    select * from %s list
+        join books b on list.book_id = b.book_id
+            join books_authors ba on b.book_id = ba.book_id
+                join authors a on a.author_id = ba.author_id
+                    where (list.user_id = %s);"""
+    book_list = execute_statement(statement, (AsIs(tables[list_name]), user['user_id']), True)
+    if book_list:
+        return jsonify({"data": book_list, "status": True}), 200
+    else:
+        return jsonify({"status": False, "message": "Could not get list data."}), 200
+
 
 
 # TODO: auth
@@ -127,8 +145,9 @@ def add_book_to_list(username, list_name):
         abort(404)
     tables = {'favorites': 'users_favorites', 'have-read': 'users_have_read', 'to-read': 'users_to_read'}
     statement = """insert into %s (user_id, book_id) values (%s, %s);"""
-    data = execute_statement(statement, (AsIs(tables[list_name]), user['user_id'], req['book_id']), False)
-    return 'book succesfully added to list', 201
+    status = execute_statement(statement, (AsIs(tables[list_name]), user['user_id'], req['book_id']), False)
+    message = 'Book succesfully added to the list.' if status else 'Could not add book to the list.'
+    return jsonify({'status': status, 'message': message}), 200
 
 # TODO: auth
 # FIXME
@@ -140,12 +159,11 @@ def delete_book_from_list(username, list_name):
     user = get_user(username)
     if not user:
         abort(404)
-    print(user)
     tables = {'favorites': 'users_favorites', 'have-read': 'users_have_read', 'to-read': 'users_to_read'}
     statement = """delete from %s where (user_id = %s and book_id = %s);"""
-    data = execute_statement(statement, (AsIs(tables[list_name]), user['user_id'], req['book_id']), False)
-    print(data)
-    return 'book succesfully deleted from list', 201
+    status = execute_statement(statement, (AsIs(tables[list_name]), user['user_id'], req['book_id']), False)
+    message = 'Book succesfully deleted from the list.' if status else 'Could not delete book from the list.'
+    return jsonify({'status': status, 'message': message}), 200
 
 # delete user
 

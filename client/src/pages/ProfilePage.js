@@ -2,10 +2,11 @@ import { CircularProgress, Typography } from '@material-ui/core'
 import React, { Component } from 'react'
 import RoundedImage from '../components/RoundedImage'
 import pp from '../images/profile_picture.jpg'
-import { getUserLists, getUserWithUsername } from '../services/userServices'
+import { getAllLists, getUserWithUsername } from '../services/userServices'
 import { Alert } from '@material-ui/lab'
 import { connect } from 'react-redux'
-import { checkAuthorization } from '../helpers/helpers.js'
+import { checkAuthorization, mapStateToProps } from '../helpers/helpers.js'
+import { updateAllLists } from '../actions/userListsAction'
 
 class ProfilePage extends Component {
 
@@ -24,6 +25,7 @@ class ProfilePage extends Component {
   async componentDidMount() {
     console.log("props in profile page: ", this.props)
     console.log("state in profile page: ", this.state)
+    if (!checkAuthorization(response, this.props.history)) return;
     this.getUserData()
   }
 
@@ -32,7 +34,6 @@ class ProfilePage extends Component {
     const response = await getUserWithUsername(this.getParams().username)
     let visitedUser = {}
     // redirect to login if not authorized
-    if (!checkAuthorization(response, this.props.history)) return;
     if (!response) {
       this.setState({ error: true, errorMessage: defaultMessage })
       return
@@ -41,9 +42,9 @@ class ProfilePage extends Component {
       this.setState({ error: true, errorMessage: response.message || defaultMessage })
     } else {
       visitedUser = response.data
-      const listsData = await getUserLists(this.getParams().username)
+      const listsData = await getAllLists(visitedUser.username)
       if (listsData) {
-        visitedUser.lists = listsData
+        this.props.dispatch(updateAllLists(listsData))
       }
     }
 
@@ -52,6 +53,7 @@ class ProfilePage extends Component {
 
   render() {
     const { visitedUser, isLoading, error, errorMessage } = this.state;
+    console.log("visited user: ", visitedUser)
     return (
       <div className='page-container jc-center'>
         {
@@ -84,39 +86,52 @@ class ProfilePage extends Component {
   }
 
   renderLists = () => {
-    const { lists } = this.state.visitedUser
-    const { favorites, to_read, have_read } = lists || {}
-    const listnames = {
-      'favorites': 'Favorites',
-      'to_read': 'Wants To Read',
-      'have_read': 'Have Read',
-    }
+    const { favorites, haveRead, toRead } = this.props
+
+
+
     let hasData = (list) => list && list.length > 0
     return (
       <div className='flex-column'>
+        <Typography variant='h5'>
+          Favorites
+        </Typography>
         {
-          Object.keys(lists).map(name => {
-            const listname = listnames[name]
-            return (
-              <div key={name}>
-                <Typography variant='h5'>
-                  {listname}
-                </Typography>
-                {
-                  hasData(lists[name]) ?
-                  <div>
-                    there are some books in this list
-                  </div>
-                  :
-                  <div>
-                    no data
-                  </div>
-                }
-              </div>
-            )
-          })
+          !hasData(favorites) ? 
+          <Typography variant='body2'>No books in the list.</Typography>
+          :
+          <div>
+            {favorites.map(book => {
+              return <Typography variant='body1'>{book.title}</Typography>
+            })}
+          </div>
         }
-
+        <Typography variant='h5'>
+          Wants To Read
+        </Typography>
+        {
+          !hasData(toRead) ? 
+          <Typography variant='body2'>No books in the list.</Typography>
+          :
+          <div>
+            {toRead.map(book => {
+              return <Typography variant='body1'>{book.title}</Typography>
+            })}
+          </div>
+        }
+        <Typography variant='h5'>
+          Have Read
+        </Typography>
+        {
+          !hasData(haveRead) ? 
+          <Typography variant='body2'>No books in the list.</Typography>
+          :
+          <div>
+            {haveRead.map(book => {
+              return <Typography variant='body1'>{book.title}</Typography>
+            })}
+          </div>
+        }
       </div>
     )
   }
@@ -126,15 +141,5 @@ class ProfilePage extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  console.log("profile page maps to props state: ", state)
-  const { isAuthenticated, error, errorMessage, user } = state.auth;
-  return {
-    isAuthenticated,
-    error,
-    errorMessage,
-    user
-  }
-}
 
 export default connect(mapStateToProps)(ProfilePage)

@@ -16,22 +16,68 @@ export const getUserWithUsername = username => {
 	});
 }
 
-export const getUserLists = username => {
-	let data = null
-	const favorites = axios.get('/users/' + username + '/favorites')
-	const toRead = axios.get('/users/' + username + '/to-read')
-	const haveRead = axios.get('/users/' + username + '/have-read')
-		return Promise.all([favorites, toRead, haveRead]).then(axios.spread((...responses) => {
-			data = {
-				favorites: responses[0],
-				to_read: responses[1],
-				have_read: responses[2]	
+export const getFavoritesList = (username) => {
+	return axios.get('/users/' + username + '/favorites')
+		.then(res => {
+			if (res.data && res.data.status) {
+				return res.data.data
 			}
-			return data
-			// use/access the results 
-		})).catch(errors => {
-			// react on errors.
-			console.log(errors)
+		})
+		.catch(err => console.log(err))
+}
+
+export const getHaveReadList = (username) => {
+	return axios.get('/users/' + username + '/have-read')
+		.then(res => {
+			if (res.data && res.data.status) {
+				return res.data.data
+			}
+		})
+		.catch(err => console.log(err))
+}
+
+export const getToReadList = (username) => {
+	return axios.get('/users/' + username + '/to-read')
+		.then(res => {
+			if (res.data && res.data.status) {
+				return res.data.data
+			}
+		})
+		.catch(err => console.log(err))
+}
+
+export const getAllLists = async (username) => {
+	const favorites = await getFavoritesList(username)
+	const toRead = await getToReadList(username)
+	const haveRead = await getHaveReadList(username)
+
+	return {
+		favorites,
+		toRead,
+		haveRead,
+	}
+}
+
+export const addBookToList = (username, book_id, listname) => {
+	return axios.post('/users/' + username + '/' + listname, { book_id })
+		.then(res => {
+			if (res && res.data) return res.data
+			else return null
+		})
+		.catch(err => {
+			console.log(err)
 			return null
 		})
-	}
+}
+
+export const deleteBookFromList = (username, book_id, listname) => {
+	return axios.delete('/users/' + username + '/' + listname, { data: {book_id} }) // delete operations needs 'data' to be specified
+		.then(res => {
+			if (res && res.data) return res.data
+			else return null
+		})
+		.catch(err => {
+			console.log(err)
+			return null
+		})
+}

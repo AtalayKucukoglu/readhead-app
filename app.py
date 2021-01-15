@@ -24,7 +24,7 @@ def connect():
 @app.after_request
 def apply_caching(response):
     response.headers.set('Access-Control-Allow-Origin', 'http://localhost:3000')
-    # response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
     response.headers.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization')
     return response
 
