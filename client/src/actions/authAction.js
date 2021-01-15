@@ -23,12 +23,11 @@ const loginError = error => {
 export const login = (username, password, token = null) => {
 	// try login via authorized token
 	if (token && !username && !password) {
-		console.log("login action try via token")
 		return dispatch => {
 			authServices.isTokenValid(token)
 				.then(res => {
 					console.log("login action data: ", res)
-					if (res.status) {
+					if ( res && res.status) {
 						return dispatch(loginSuccess(res.data))
 					}
 					else {
@@ -40,7 +39,6 @@ export const login = (username, password, token = null) => {
 	return dispatch => {
 		authServices.login(username, password)
 			.then(res => {
-				console.log("response from login service: ", res)
 				if (!res) {
 					dispatch(loginError(defaultErrorMessage))
 					return
@@ -49,7 +47,6 @@ export const login = (username, password, token = null) => {
 					return dispatch(loginError(res.message || defaultErrorMessage))
 				}
 				else {
-					console.log(res.token)
 					setAuthorizationToken(res.token)
 					return dispatch(loginSuccess(res.data))
 				}
@@ -63,7 +60,6 @@ export const register = (user) => {
 	return dispatch => {
 		authServices.register(user)
 			.then(res => {
-				console.log("response.data register service: ", res)
 				if (!res) {
 					dispatch(loginError(defaultErrorMessage))
 					return

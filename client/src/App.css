@@ -24,6 +24,7 @@ html, body {
 .header-logo {
   height: auto;
   width: 100px;
+  cursor: pointer;
 }
 
 .app-container {
@@ -35,15 +36,15 @@ html, body {
 .page-container {
   display: flex;
   margin-top: 20px;
-  height: 80vh;
-  max-height: 800px;
+  min-height: 80vh;
   width: 80vw;
   max-width: 1200px;
   min-width: 375px;
   background-color: #fff;
   align-self: center;
   border-radius: 10px;
-  padding: 10px
+  padding: 10px;
+  margin-bottom: 20px;
 }
 
 .card-container {
@@ -79,8 +80,20 @@ html, body {
   justify-content: space-between;
 }
 
+.jc-sa {
+  justify-content: space-around;
+}
+
 .ai-center {
   align-items: center;
+}
+
+.ai-fs {
+  align-items: flex-start;
+}
+
+.ai-fe {
+  align-items: flex-end;
 }
 
 .mx-1 {
@@ -119,5 +132,7 @@ html, body {
   padding-top: 0.5em !important;
 }
 
-
+.cursor-pointer {
+  cursor: pointer;
+}
 

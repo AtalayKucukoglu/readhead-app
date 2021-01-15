@@ -1,6 +1,5 @@
-import { Grid } from '@material-ui/core'
 import React, { Component } from 'react'
-import { Route, BrowserRouter as Router, Link, Switch } from 'react-router-dom'
+import { Route, BrowserRouter as Router, Switch } from 'react-router-dom'
 import './App.css'
 import Header from './components/Header'
 import LoginPage from './pages/LoginPage'
