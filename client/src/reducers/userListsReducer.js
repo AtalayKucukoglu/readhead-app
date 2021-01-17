@@ -28,12 +28,12 @@ const userListsReducer = (state = initState, action) => {
     case UPDATE_ALL_LISTS:
       return {
         ...state,
-        favorites: action.payload.favorites,
-        haveRead: action.payload.haveRead,
-        toRead: action.payload.toRead,
+        favorites: action.payload.favorites || [],
+        haveRead: action.payload.haveRead || [],
+        toRead: action.payload.toRead || [],
       };
     default:
-      return state;
+      return state
   }
 }
 

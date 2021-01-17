@@ -14,7 +14,6 @@ export const UPDATE_LIST_ERROR = "UPDATE_LIST_ERROR"
 
 const { UPDATE_FAVORITES, UPDATE_HAVE_READ, UPDATE_TO_READ, UPDATE_ALL_LISTS } = UPDATE_LIST_OPERATIONS
 
-
 const listnames = {
   "UPDATE_FAVORITES": "favorites",
   "UPDATE_TO_READ": "to-read",
@@ -29,6 +28,9 @@ const updateList = (newList, operation) => {
 };
 
 export const updateAllLists = (newLists) => {
+  if (!newLists.favorites) newLists.favorites = []
+  if (!newLists.haveRead) newLists.haveRead = []
+  if (!newLists.toRead) newLists.toRead = []
   return {
     type: UPDATE_ALL_LISTS,
     payload: newLists,
