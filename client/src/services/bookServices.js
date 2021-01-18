@@ -25,3 +25,15 @@ export const getBookById = (bookId) => {
 		.catch(err => console.log(err))
 }
 
+export const updateBook = (bookId, data) => {
+	return axios.put('/authors/' + bookId + '/update', { data })
+		.then(res => {
+			console.log(res)
+			if (res && res.data) return res.data
+			else return null
+		})
+		.catch(err => {
+			console.log(err)
+			return null
+		})
+}

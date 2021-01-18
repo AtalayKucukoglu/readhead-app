@@ -20,14 +20,15 @@ export default class CreateEntityModal extends Component {
       }
         <Dialog
           open={isOpen}
-          onClose={this.handleClose} >
+          onClose={this.handleClose}
+          maxWidth='md' >
           <DialogTitle>{title}</DialogTitle>
           <DialogContent>
             {this.props.children}
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleSave} color="primary">
-              { isSaving ? <LoadingIcon size={20} color='primary' /> : "Save" }
+              { isSaving ? <LoadingIcon size='sm' color='primary' /> : "Save" }
           </Button>
             <Button onClick={this.handleClose} color="primary" autoFocus>
               Cancel

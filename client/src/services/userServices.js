@@ -96,3 +96,18 @@ export const updateGoal = (username, goal) => {
 			return null
 		})
 }
+
+export const updateUserInfo = (username, data) => {
+	console.log(data)
+	return axios.put('/users/' + username + '/update', { data })
+		.then(res => {
+			console.log(res)
+			if (res && res.data) return res.data
+			else return null
+		})
+		.catch(err => {
+			console.log(err)
+			return null
+		})
+}
+

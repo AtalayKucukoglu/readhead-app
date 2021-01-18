@@ -36,3 +36,20 @@ def create_book():
 #TODO: filter books
 
 
+@app.route('/api/books/<book_id>/update', methods=['PUT'])
+def update_book(book_id):
+    get_book = """select * from books where book_id = %s limit 1"""
+    book = execute_statement(get_book, (book_id,), True, False)
+    if not book:
+        return jsonify({'status': False, 'message': 'Book does not exists.' }), 200
+
+    update = {**book, **request.json.data}
+    statement = "update books set "
+    for key in update:
+        if key is 'book_id':
+            continue
+        statement += key + ' = ' + ' %s, '
+    statement = statement[:len(statement) - 2] + " where (book_id = %s)"
+    params = tuple(book[key] for key in update if key is not 'book_id') + (book['book_id'],)
+    status = execute_statement(statement, params, False)
+    return jsonify({'status': status }), 200

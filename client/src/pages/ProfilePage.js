@@ -1,4 +1,4 @@
-import { CircularProgress, Grid, TextField, Typography } from '@material-ui/core'
+import { CircularProgress, Grid, Link, TextField, Typography } from '@material-ui/core'
 import React, { Component } from 'react'
 import RoundedImage from '../components/RoundedImage'
 import pp from '../images/profile_picture.jpg'
@@ -8,6 +8,8 @@ import { connect } from 'react-redux'
 import { checkAuthorization, mapStateToProps } from '../helpers/helpers.js'
 import { updateAllLists } from '../actions/userListsAction'
 import CreateEntityModal from '../components/CreateEntityModal'
+import { green } from '@material-ui/core/colors'
+import UserForm from '../components/forms/UserForm'
 
 class ProfilePage extends Component {
 
@@ -111,8 +113,8 @@ class ProfilePage extends Component {
                         isOpen={this.state.goalsModalOpen}
                         isSaving={this.state.goalSaving}
                         display='button'
-                        displayText='Add Goal'
-                        title='Add Goal'
+                        displayText='Edit Goal'
+                        title='Edit Goal'
                         saved={this.state.saved}
                         onSave={this.handleGoalSave}
                         onClose={this.handleGoalModalClose}
@@ -145,6 +147,11 @@ class ProfilePage extends Component {
         <Typography variant='h4'>
           {username}
         </Typography>
+        {
+          !this.state.isUsersOwnProfile ? null :
+            <UserForm mode='update' user={this.props.user} title='Edit Author' style={{ color: green[500] }} text='Edit Info' />
+        }
+
       </div>
     )
   }
@@ -165,7 +172,7 @@ class ProfilePage extends Component {
               :
               <div>
                 {favorites.map(book => {
-                  return <Typography variant='body1'>{book.title}</Typography>
+                  return <Typography component={Link} color='inherit' onClick={() => this.props.history.push('/books/' + book.book_id)} variant='body1'>{book.title}</Typography>
                 })}
               </div>
           }
@@ -178,7 +185,7 @@ class ProfilePage extends Component {
               :
               <div>
                 {toRead.map(book => {
-                  return <Typography variant='body1'>{book.title}</Typography>
+                  return <Typography component={Link} color='inherit' onClick={() => this.props.history.push('/books/' + book.book_id)} variant='body1'>{book.title}</Typography>
                 })}
               </div>
           }
@@ -191,7 +198,7 @@ class ProfilePage extends Component {
               :
               <div>
                 {haveRead.map(book => {
-                  return <Typography variant='body1'>{book.title}</Typography>
+                  return <Typography component={Link} color='inherit' onClick={() => this.props.history.push('/books/' + book.book_id)} variant='body1'>{book.title}</Typography>
                 })}
               </div>
           }

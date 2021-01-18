@@ -101,14 +101,15 @@ def get_all_users():
 @app.route('/api/users/<username>/update', methods=['PUT'])
 def update_user(username):
     user = get_user(username)
-    update = {**user, **request.json}
+    print(request.json)
+    update = {**user, **request.json.data}
     statement = "update users set "
     for key in update:
         statement += key + ' = ' + ' %s, '
     statement = statement[:len(statement) - 2] + " where (user_id = %s and username = %s)"
     params = tuple(update[key] for key in update) + (user['user_id'], user['username'])
-    execute_statement(statement, params, False)
-    return 'user updated', 200
+    status = execute_statement(statement, params, False)
+    return jsonify({'status': status }), 200
 
 
 # TODO: auth

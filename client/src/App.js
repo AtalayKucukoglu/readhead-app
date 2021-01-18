@@ -10,6 +10,8 @@ import SearchPage from './pages/SearchPage'
 import { connect } from 'react-redux'
 import { getAuthorizationToken } from './helpers/helpers'
 import { login, logout } from './actions/authAction'
+import BookPage from './pages/BookPage'
+import AuthorPage from './pages/AuthorPage'
 
 class App extends Component {
 
@@ -36,6 +38,8 @@ class App extends Component {
             <Route exact path='/login' component={LoginPage} />
             <Route exact path='/users/:username' component={ProfilePage} />
             <Route exact path='/search' component={SearchPage} />
+            <Route exact path='/books/:bookId' component={BookPage} />
+            <Route exact path='/authors/:authorId' component={AuthorPage} />
           </Switch>
         </div>
       </Router>

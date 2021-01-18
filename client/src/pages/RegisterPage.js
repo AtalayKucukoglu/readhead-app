@@ -23,6 +23,11 @@ class RegisterPage extends Component {
   }
 
   render() {
+
+    if (this.props.isAuthenticated && this.props.user) {
+      this.props.history.push('/users/' + this.props.user.username)
+    }
+
     return (
       <div className='page-container jc-center ai-center'>
         <Grid item className='px-1 py-1' xs={8} s={6} md={6} lg={4} xl={3}>

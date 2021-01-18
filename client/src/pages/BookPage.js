@@ -2,6 +2,9 @@ import { CircularProgress, Grid, Typography } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import React, { Component } from 'react'
 import { getBookById } from '../services/bookServices'
+import BookForm from '../components/forms/BookForm'
+import { green } from '@material-ui/core/colors'
+
 
 export default class BookPage extends Component {
   constructor(props) {
@@ -61,6 +64,7 @@ export default class BookPage extends Component {
         <Typography variant='h4'>By {name}</Typography>
         <Typography variant='h5'>{pages} pages</Typography>
         <Typography variant='h6'>Published at: {publish_date}</Typography>
+        <BookForm mode='update' book={this.state.book} title='Edit Author' style={{color: green[500]}} text='Edit Book' />
       </div>
     )
   }
