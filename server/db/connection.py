@@ -2,12 +2,12 @@ from psycopg2 import Error
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from configparser import SafeConfigParser
-from server.db.db_info import dsn
-
+import os
 
 def execute_statement(statement, params, is_read_mode=False, fetch_all=True, window=None):
     # params = config()
     # with psycopg2.connect(**params) as connection:
+    dsn = os.getenv('DSN')
     with psycopg2.connect(dsn) as connection:
         cursor = connection.cursor(cursor_factory=RealDictCursor)
         cursor.execute(statement, params)

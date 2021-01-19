@@ -1,12 +1,9 @@
-# run this:
-# C:\Users\Atalay\PycharmProjects\db-project\venv\Scripts\python.exe -m flask run
-
 from flask import Flask, jsonify
 from server.db.connection import db_connect
-from config_app import secret_key
+import os
 
 app = Flask(__name__, static_folder='./client/build', static_url_path='/')
-app.config['SECRET_KEY'] = secret_key
+app.config['SECRET_KEY'] = os.getenv('APP_SECRET_KEY')
 
 import server.db.books
 import server.db.users
