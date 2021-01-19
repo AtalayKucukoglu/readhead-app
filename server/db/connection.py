@@ -4,11 +4,7 @@ from psycopg2.extras import RealDictCursor
 from configparser import SafeConfigParser
 import os
 
-dsn =   """ user={}
-            password={}
-            host={}
-            port={}
-            dbname={} """.format(os.getenv('DSN_USER'), os.getenv('DSN_PWD'), os.getenv('DSN_HOST'), os.getenv('DSN_PORT'), os.getenv('DSN_DBNAME'))
+dsn = "user={} password={} host={} port=5432 dbname={}".format(os.getenv('DSN_USER'), os.getenv('DSN_PWD'), os.getenv('DSN_HOST'), os.getenv('DSN_DBNAME'))
 
 
 def execute_statement(statement, params, is_read_mode=False, fetch_all=True, window=None):
