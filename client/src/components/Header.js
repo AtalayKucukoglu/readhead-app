@@ -2,7 +2,7 @@ import { ButtonBase, Typography } from '@material-ui/core'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { mapStateToProps } from '../helpers/helpers'
-import logo from '../images/logo.jpg'
+import logo from '../images/logo_white.png'
 import profilePicture from '../images/profile_picture.jpg'
 import RoundedImage from './RoundedImage'
 

@@ -79,13 +79,9 @@ export const deleteBookFromList = (username, book_id, listname) => {
 		})
 }
 
-export const updateGoal = (username, goal) => {
-	console.log(goal)
-	return axios.put('/users/' + username + '/update', {
-		'goal_book_count': goal.goalCount,
-		'goal_start_date': goal.goalStartDate,
-		'goal_end_date': goal.goalEndDate,
-	})
+export const updateGoal = (username, data) => {
+	console.log(data)
+	return axios.put('/users/' + username + '/update', { data })
 		.then(res => {
 			console.log(res)
 			if (res && res.data) return res.data
@@ -111,3 +107,16 @@ export const updateUserInfo = (username, data) => {
 		})
 }
 
+export const deleteUser = (user_id) => {
+	console.log(user_id)
+	return axios.delete('/users/delete', { data: { user_id } }) // delete operations needs 'data' to be specified
+		.then(res => {
+			console.log(res)
+			if (res && res.data) return res.data
+			else return null
+		})
+		.catch(err => {
+			console.log(err)
+			return null
+		})
+}

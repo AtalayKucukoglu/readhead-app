@@ -4,7 +4,7 @@ import * as authServices from '../services/authServices';
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_ERROR = "LOGIN_ERROR";
 export const LOGOUT = "LOGOUT";
-const defaultErrorMessage = "An error occured. Please try again later"
+const defaultErrorMessage = "An error occured. Please try again later."
 
 const loginSuccess = user => {
 	return {
@@ -60,6 +60,7 @@ export const register = (user) => {
 	return dispatch => {
 		authServices.register(user)
 			.then(res => {
+				console.log(res)
 				if (!res) {
 					dispatch(loginError(defaultErrorMessage))
 					return

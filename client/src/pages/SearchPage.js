@@ -8,6 +8,9 @@ import { getAllLists } from '../services/userServices';
 import { updateAllLists } from '../actions/userListsAction';
 import ListItem from '../components/ListItem';
 import { searchAuthorsByName } from '../services/authorServices'
+import BookForm from '../components/forms/BookForm'
+import AuthorForm from '../components/forms/AuthorForm'
+
 
 const placeholders = {
   'books': 'start typing a title...',
@@ -114,18 +117,19 @@ class SearchPage extends Component {
   renderAddItem = () => {
     const searchable = this.state.search.length > 3
     if (!searchable) return null
+    const title = "Couldn't find? Add another one instead!";
     return (
-      <div className='py-1'>
-        <Typography variant='body1'>
-          <Link href='/add' style={{ color: green[500] }} >Couldn't find what you want? Add another book instead!</Link>
-        </Typography>
-      </div>
+      this.state.searchMode === 'books' ?
+        <BookForm history={this.props.history} mode='create' title="Add Book" style={{ color: green[500] }} text={title} />
+        : this.state.searchMode === 'authors' ?
+          <AuthorForm history={this.props.history} mode='create' title="Add Author" style={{ color: green[500] }} text={title} />
+          : null
     )
   }
 
   handleSearchModeChange = (searchMode) => {
     console.log(searchMode)
-    this.setState({searchMode, results: [], search: ''})
+    this.setState({ searchMode, results: [], search: '' })
   }
 
   handleSearchChange = input => {
@@ -134,8 +138,11 @@ class SearchPage extends Component {
   }
 
   fetchResults = async input => {
-    if (input.length < 4) return
-    const results = this.state.searchMode === 'books' ? await searchBooksByTitle(input) : await searchAuthorsByName(input)
+    if (input.trim().length < 5) {
+      this.setState({ results: []})
+      return
+    }
+    const results = this.state.searchMode === 'books' ? await searchBooksByTitle(input.trim()) : await searchAuthorsByName(input.trim())
     if (!results) {
       this.setState({ error: true, errorMessage: 'An error happened. Please try again later.', results: [] })
     }

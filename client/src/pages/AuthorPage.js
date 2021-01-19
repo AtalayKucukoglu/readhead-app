@@ -2,6 +2,7 @@ import { Button, CircularProgress, Divider, Grid, Link, Typography } from '@mate
 import { green } from '@material-ui/core/colors'
 import { Alert } from '@material-ui/lab'
 import React, { Component } from 'react'
+import DeleteModalButton from '../components/DeleteModalButton'
 import AuthorForm from '../components/forms/AuthorForm'
 import { getAuthorBooks, getAuthorById } from '../services/authorServices'
 
@@ -80,6 +81,8 @@ export default class AuthorPage extends Component {
         <Typography variant='h6'>Birth Date: {birth_date || "unknown"}</Typography>
         <Typography variant='h6'>Death Date: {death_date || "unknown"}</Typography>
         <AuthorForm mode='update' author={this.state.author} title='Edit Author' style={{color: green[500]}} text='Edit Author' />
+        <hr/>
+        <DeleteModalButton mode='author' item={this.state.author} title='Confirm Delete' text='Delete This Author' history={this.props.history} />
       </Grid>
     )
   }

@@ -59,9 +59,9 @@ export const searchBirthPlace = (input) => {
   })
 } 
 
-export const updateAuthor = (authorId, data) => {
-	console.log(data)
-	return axios.put('/authors/' + authorId + '/update', { ...data })
+export const createAuthor = (data) => {
+  console.log(data)
+	return axios.post('/authors/create', { data })
 		.then(res => {
 			console.log(res)
 			if (res && res.data) return res.data
@@ -72,3 +72,32 @@ export const updateAuthor = (authorId, data) => {
 			return null
 		})
 }
+
+export const updateAuthor = (authorId, data) => {
+	console.log(data)
+	return axios.put('/authors/' + authorId + '/update', { data })
+		.then(res => {
+			console.log(res)
+			if (res && res.data) return res.data
+			else return null
+		})
+		.catch(err => {
+			console.log(err)
+			return null
+		})
+}
+
+export const deleteAuthor = (author_id) => {
+	return axios.delete('/authors/delete', { data: { author_id } })
+		.then(res => {
+			console.log(res)
+			if (res && res.data) return res.data
+			else return null
+		})
+		.catch(err => {
+			console.log(err)
+			return null
+		})
+}
+
+

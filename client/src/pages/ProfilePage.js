@@ -10,6 +10,8 @@ import { updateAllLists } from '../actions/userListsAction'
 import CreateEntityModal from '../components/CreateEntityModal'
 import { green } from '@material-ui/core/colors'
 import UserForm from '../components/forms/UserForm'
+import GoalForm from '../components/forms/GoalForm'
+import DeleteModalButton from '../components/DeleteModalButton'
 
 class ProfilePage extends Component {
 
@@ -45,6 +47,11 @@ class ProfilePage extends Component {
       this.fetchUserData()
       this.fetchListsData()
     }
+    // if visited user is changed
+    if (prevState.visitedUser && prevState.visitedUser.username !== this.getParams().username) {
+      this.fetchUserData()
+      this.fetchListsData()
+    }
   }
 
   fetchUserData = async () => {
@@ -53,7 +60,7 @@ class ProfilePage extends Component {
     const defaultMessage = 'There is no such a user. Maybe typo in url?'
 
     // if this page is authenticated user's profile
-    if (visitedUsername === this.props.user.username) {
+    if (visitedUsername === this.props.user.username && !this.state.isUsersOwnProfile) {
       this.setState({ isLoading: false, visitedUser: this.props.user, isUsersOwnProfile: true })
       return
     }
@@ -106,25 +113,6 @@ class ProfilePage extends Component {
               <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
                 {this.renderUserInfo()}
                 {this.renderGoalInfo()}
-                {
-                  !isUsersOwnProfile ? null :
-                    <div className='flex-column ai-center my-1'>
-                      <CreateEntityModal
-                        isOpen={this.state.goalsModalOpen}
-                        isSaving={this.state.goalSaving}
-                        display='button'
-                        displayText='Edit Goal'
-                        title='Edit Goal'
-                        saved={this.state.saved}
-                        onSave={this.handleGoalSave}
-                        onClose={this.handleGoalModalClose}
-                        onOpen={this.handleGoalModalOpen}
-                      >
-                        {this.renderAddGoalForm()}
-                      </CreateEntityModal>
-                    </div>
-                }
-
               </Grid>
               <Grid item xs={12} md={6}>
                 {this.renderLists()}
@@ -140,16 +128,20 @@ class ProfilePage extends Component {
   renderUserInfo = () => {
     const { visitedUser } = this.state;
     if (!visitedUser) return null;
-    const { username } = visitedUser
+    const { username, email, gender, birth_date } = visitedUser
     return (
       <div className='flex-column ai-center'>
         <RoundedImage height={100} src={pp} alt={username} />
-        <Typography variant='h4'>
-          {username}
-        </Typography>
+        <Typography variant='h4'>{username}</Typography>
+        <Typography variant='body1'>{email}</Typography>
+        <Typography variant='body1'>{gender}</Typography>
+        <Typography variant='body1'>{birth_date}</Typography>
         {
           !this.state.isUsersOwnProfile ? null :
-            <UserForm mode='update' user={this.props.user} title='Edit Author' style={{ color: green[500] }} text='Edit Info' />
+            <div>
+              <UserForm mode='update' user={this.props.user} title='Edit Author' style={{ color: green[500] }} text='Edit Info' />
+              <DeleteModalButton mode='user' item={this.props.user} title='Confirm Delete' text='Delete Your Account' history={this.props.history} />
+            </div>
         }
 
       </div>
@@ -170,9 +162,9 @@ class ProfilePage extends Component {
             !hasData(favorites) ?
               <Typography variant='body2'>No books in the list.</Typography>
               :
-              <div>
+              <div className='flex-column ai-fs'>
                 {favorites.map(book => {
-                  return <Typography component={Link} color='inherit' onClick={() => this.props.history.push('/books/' + book.book_id)} variant='body1'>{book.title}</Typography>
+                  return <Typography className='cursor-pointer' component={Link} color='inherit' onClick={() => this.props.history.push('/books/' + book.book_id)} variant='body1'>{book.title}</Typography>
                 })}
               </div>
           }
@@ -183,9 +175,9 @@ class ProfilePage extends Component {
             !hasData(toRead) ?
               <Typography variant='body2'>No books in the list.</Typography>
               :
-              <div>
+              <div className='flex-column ai-fs'>
                 {toRead.map(book => {
-                  return <Typography component={Link} color='inherit' onClick={() => this.props.history.push('/books/' + book.book_id)} variant='body1'>{book.title}</Typography>
+                  return <Typography className='cursor-pointer' component={Link} color='inherit' onClick={() => this.props.history.push('/books/' + book.book_id)} variant='body1'>{book.title}</Typography>
                 })}
               </div>
           }
@@ -196,9 +188,9 @@ class ProfilePage extends Component {
             !hasData(haveRead) ?
               <Typography variant='body2'>No books in the list.</Typography>
               :
-              <div>
+              <div className='flex-column ai-fs'>
                 {haveRead.map(book => {
-                  return <Typography component={Link} color='inherit' onClick={() => this.props.history.push('/books/' + book.book_id)} variant='body1'>{book.title}</Typography>
+                  return <Typography className='cursor-pointer' component={Link} color='inherit' onClick={() => this.props.history.push('/books/' + book.book_id)} variant='body1'>{book.title}</Typography>
                 })}
               </div>
           }
@@ -208,8 +200,7 @@ class ProfilePage extends Component {
   }
 
   renderGoalInfo = () => {
-    if (!this.state.isUsersOwnProfile) return
-    const { visitedUser } = this.state;
+    const { visitedUser, isUsersOwnProfile } = this.state;
     if (!visitedUser) return null
     const { goal_book_count, goal_start_date, goal_end_date } = visitedUser
     return (
@@ -230,24 +221,12 @@ class ProfilePage extends Component {
               <Typography variant='body1'>
                 Goal End Date: {goal_end_date}
               </Typography>
-              {/* <Typography variant='body1'>
-                Progress: unknown
-              </Typography> */}
             </div>
         }
-      </div>
-    )
-  }
-
-  renderAddGoalForm = () => {
-    return (
-      <div className='flex-column '>
-        <TextField required className='mb-1' name='goalCount' label='Goal Book Count' type='number' variant='outlined'
-          value={this.state.goalCount} onChange={this.handleChange} />
-        <TextField required className='mb-1' InputLabelProps={{ shrink: true }} variant='outlined' label='Start Date'
-          type='date' name='goalStartDate' value={this.state.goalStartDate} onChange={this.handleChange} />
-        <TextField required className='mb-1' InputLabelProps={{ shrink: true }} variant='outlined' label='Start Date'
-          type='date' name='goalEndDate' value={this.state.goalEndDate} onChange={this.handleChange} />
+        {
+          !isUsersOwnProfile ? null :
+            <GoalForm mode='update' data={this.state.visitedUser} title='Edit Goal' style={{ color: green[500] }} text='Edit Goal' />
+        }
       </div>
     )
   }
@@ -256,28 +235,6 @@ class ProfilePage extends Component {
     this.setState({
       [ev.target.name]: ev.target.value
     })
-  }
-
-  handleGoalSave = async () => {
-    this.setState({ goalSaving: true })
-    const { goalCount, goalStartDate, goalEndDate } = this.state
-    const status = await updateGoal(this.props.user.username, {
-      goalCount,
-      goalStartDate,
-      goalEndDate,
-    })
-    if (status) {
-      this.setState({ goalSaving: false })
-    }
-    this.handleGoalModalClose()
-  }
-
-  handleGoalModalClose = () => {
-    this.setState({ goalsModalOpen: false })
-  }
-
-  handleGoalModalOpen = () => {
-    this.setState({ goalsModalOpen: true })
   }
 
   getParams = () => {

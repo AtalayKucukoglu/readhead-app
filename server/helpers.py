@@ -15,5 +15,15 @@ def get_user(username=None, user_id=None):
             cursor.execute(statement, (username,))
         user = cursor.fetchone()
         cursor.close()
+        if user:
+            user['birth_date'] = user['birth_date'].strftime('%Y-%m-%d') if user['birth_date'] else None
+            user['goal_start_date'] = user['goal_start_date'].strftime('%Y-%m-%d') if user['goal_start_date'] else None
+            user['goal_end_date'] = user['goal_end_date'].strftime('%Y-%m-%d') if user['goal_end_date'] else None
         return user
 
+def update_dict(current_dict, new_dict):
+    updated = {}
+
+    for key in current_dict:
+        updated[key] = new_dict[key] if key in new_dict else current_dict[key]
+    return updated

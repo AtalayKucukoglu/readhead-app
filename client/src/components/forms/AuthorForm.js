@@ -2,7 +2,7 @@ import { Button, MenuItem, TextField, Typography } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import React, { Component } from 'react'
 import { getDateFormatted } from '../../helpers/helpers'
-import { searchBirthPlace, updateAuthor } from '../../services/authorServices'
+import { createAuthor, searchBirthPlace, updateAuthor } from '../../services/authorServices'
 import CreateEntityModal from '../CreateEntityModal'
 
 const genders = ['Male', 'Female']
@@ -28,12 +28,9 @@ export default class AuthorForm extends Component {
 
   componentDidMount() {
     if (this.props.mode === 'update' && this.props.author) {
-      const { birth_date, death_date, birthplace, birthplace_id, gender } = this.props.author
-      console.log(this.props.author)
+      const { birthplace, birthplace_id, gender } = this.props.author
       this.setState({
         ...this.props.author,
-        birth_date: getDateFormatted(new Date(birth_date)),
-        death_date: getDateFormatted(new Date(death_date)),
         birthPlace: { birthplace, birthplace_id },
         gender: genderMap[gender] || gender,
       })
@@ -55,8 +52,6 @@ export default class AuthorForm extends Component {
 
   // TODO: if saved print succes message
   render() {
-    console.log(this.state)
-    console.log(this.props.author.birth_date, new Date(this.props.author.birth_date), getDateFormatted(new Date(this.props.author.birth_date)))
     return (
       <div className='my-1'>
         <Button style={this.props.style} onClick={this.handleOpen} >
@@ -121,12 +116,18 @@ export default class AuthorForm extends Component {
   }
 
   handleSave = async () => {
-    const { name, birthplace_id, birth_date, death_date, gender, author_id } = this.state
+    const { name, birth_date, death_date, gender, author_id } = this.state
+    const { birthplace_id } = this.state.birthPlace
+    const { mode } = this.props
     this.setState({ isSaving: true })
-    const updated = { name, birthplace_id, birth_date, death_date, gender };
-    const status = await updateAuthor(author_id, updated)
-    if (status) {
-      this.setState({ isSaving: false, saved: true })
+    const data = { name, birthplace_id, birth_date, death_date, gender };
+    const response = mode === 'update' ? await updateAuthor(author_id, data) : await createAuthor(data)
+    console.log(response)
+    if (response && response.status) {
+      this.setState({ saved: true })
+      if (mode === 'create' && response.author_id) {
+        this.props.history.push('/authors/' + response.author_id)
+      }
     }
     this.handleClose()
   }
@@ -136,6 +137,6 @@ export default class AuthorForm extends Component {
   }
 
   handleClose = () => {
-    this.setState({ isOpen: false })
+    this.setState({ isOpen: false, isSaving: false })
   }
 }

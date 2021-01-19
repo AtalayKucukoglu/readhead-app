@@ -4,7 +4,7 @@ from werkzeug.security import  check_password_hash
 import jwt
 import datetime
 from functools import wraps
-from server.users import get_user
+from server.helpers import get_user
 from server.db.errors import Unauthorized
 
 # TODO: use User class

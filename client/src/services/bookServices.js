@@ -4,6 +4,7 @@ import axios from 'axios'
 export const searchBooksByTitle = input => {
 	return axios.post('/books/search', { "value": input })
 		.then(res => {
+			console.log(res)
 			if (res && res.data && res.data.status) {
 				return res.data.data
 			}
@@ -25,8 +26,9 @@ export const getBookById = (bookId) => {
 		.catch(err => console.log(err))
 }
 
-export const updateBook = (bookId, data) => {
-	return axios.put('/authors/' + bookId + '/update', { data })
+export const createBook = (data) => {
+  console.log(data)
+	return axios.post('/books/create', { data })
 		.then(res => {
 			console.log(res)
 			if (res && res.data) return res.data
@@ -37,3 +39,33 @@ export const updateBook = (bookId, data) => {
 			return null
 		})
 }
+
+
+export const updateBook = (bookId, data) => {
+	console.log(data)
+	return axios.put('/books/' + bookId + '/update', { data })
+		.then(res => {
+			console.log(res)
+			if (res && res.data) return res.data
+			else return null
+		})
+		.catch(err => {
+			console.log(err)
+			return null
+		})
+}
+
+export const deleteBook = (book_id) => {
+	console.log(book_id)
+	return axios.delete('/books/delete', { data: { book_id } })
+		.then(res => {
+			console.log(res)
+			if (res && res.data) return res.data
+			else return null
+		})
+		.catch(err => {
+			console.log(err)
+			return null
+		})
+}
+

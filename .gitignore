@@ -5,3 +5,4 @@
 /src/db/tasks.txt
 __pycache__
 NOTE*
+server/db/db_info.py

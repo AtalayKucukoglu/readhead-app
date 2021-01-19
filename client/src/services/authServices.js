@@ -30,20 +30,12 @@ export const isTokenValid = (token) => {
 }
 
 export const register = (user) => {
-	const body = {
-		'username': user.username,
-		'email': user.email,
-		'password': user.password,
-		'birth_date': user.birthdate,
-		'gender': user.gender
-	}
-	console.log(body)
 	return axios.post('/users/register', {
 		'username': user.username,
 		'email': user.email,
 		'password': user.password,
-		'birth_date': user.birthdate,
-		'gender': user.gender
+		'birth_date': user.birthdate || null,
+		'gender': user.gender || null
 	})
 		.then(response => {
 			console.log("response: ", response)

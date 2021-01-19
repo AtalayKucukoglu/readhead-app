@@ -3,19 +3,6 @@ import store from './store'
 
 // authorization related helpers
 
-export const checkAuthorization = (response, history) => {
-  let redirect = false
-  if (!response) return true
-
-  if (!response.status && (!response.authorized || !response.token_valid)) {
-    redirect = true
-  }
-  if (redirect) {
-    history.push('/login')
-  }
-  return !redirect
-}
-
 export const setAuthorizationToken = token => {
   if (token) {
     console.log("set auth token: ", token)
@@ -43,6 +30,11 @@ export const getAuthorizationToken = () => {
 // export const getUserId = () => {
 //   return store.getState().auth.user.user_id || null
 // }
+
+export const getDateFormatted = (date) => {
+  if (!date) return null
+  return date.getYear() + '-' + date.getMonth() + '-' + date.getDate()
+}
 
 // redux related helpers
 

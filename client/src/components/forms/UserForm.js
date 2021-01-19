@@ -24,7 +24,6 @@ export default class UserForm extends Component {
       this.setState({
         ...this.props.user,
         gender: genderMap[gender] || gender,
-        hashed_password: undefined
       })
     }
   }
@@ -68,8 +67,8 @@ export default class UserForm extends Component {
                   {option}
                 </MenuItem>)}
             </TextField>
-            {/* <TextField className='mb-1' InputLabelProps={{ shrink: true }} variant='outlined' label='Birthdate'
-              type='date' name='birthdate' value={this.state.birthdate} onChange={this.handleChange} /> */}
+            <TextField className='mb-1' InputLabelProps={{ shrink: true }} variant='outlined' label='Birthdate'
+              type='date' name='birth_date' value={this.state.birth_date} onChange={this.handleChange} />
       </div>
     )
   }

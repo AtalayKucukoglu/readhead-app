@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Button, Typography } from '@material-ui/core'
 import { connect } from 'react-redux'
+import logo from '../images/logo_orange.png'
 
 class HomePage extends Component {
   constructor(props) {
@@ -15,6 +16,7 @@ class HomePage extends Component {
     console.log(this.props)
     return (
       <div className='page-container jc-center ai-center flex-column'>
+        <img style={{width: 200, height:'auto'}} src={logo} alt='ReadHead' />
         <Typography variant='h1' >
           Welcome!
         </Typography>

@@ -15,8 +15,8 @@ def execute_statement(statement, params, is_read_mode=False, fetch_all=True, win
         if is_read_mode:
             if fetch_all:
                 data = cursor.fetchall()
-            elif window:
-                data = cursor.fetch_all()[window[0]:window[1]]
+            # elif window:
+            #     data = cursor.fetch_all()[window[0]:window[1]]
             else:
                 data = cursor.fetchone()
 

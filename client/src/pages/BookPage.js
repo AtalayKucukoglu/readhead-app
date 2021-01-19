@@ -1,9 +1,10 @@
-import { CircularProgress, Grid, Typography } from '@material-ui/core'
+import { CircularProgress, Grid, Link, Typography } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import React, { Component } from 'react'
 import { getBookById } from '../services/bookServices'
 import BookForm from '../components/forms/BookForm'
 import { green } from '@material-ui/core/colors'
+import DeleteModalButton from '../components/DeleteModalButton'
 
 
 export default class BookPage extends Component {
@@ -57,14 +58,16 @@ export default class BookPage extends Component {
 
   renderBook = () => {
     if (!this.state.book) return null
-    const { book_id, title, publish_date, pages, name } = this.state.book
+    const { book_id, title, publish_date, pages, name, author_id } = this.state.book
     return (
       <div key={book_id}>
         <Typography variant='h3'>{title}</Typography>
-        <Typography variant='h4'>By {name}</Typography>
+        <Typography className='cursor-pointer' component={Link} color='inherit' onClick={() => this.props.history.push('/authors/' + author_id)}  variant='h4'>By {name}</Typography>
         <Typography variant='h5'>{pages} pages</Typography>
         <Typography variant='h6'>Published at: {publish_date}</Typography>
-        <BookForm mode='update' book={this.state.book} title='Edit Author' style={{color: green[500]}} text='Edit Book' />
+        <BookForm mode='update' book={this.state.book} title='Edit Book' style={{color: green[500]}} text='Edit Book' />
+        <hr/>
+        <DeleteModalButton mode='book' item={this.state.book} title='Confirm Delete' text='Delete This Book' history={this.props.history} />
       </div>
     )
   }
