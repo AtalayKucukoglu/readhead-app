@@ -1,8 +1,8 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 from server.db.connection import db_connect
 import os
 
-app = Flask(__name__, static_folder='./client/build', static_url_path='/')
+app = Flask(__name__, static_folder='client/build', static_url_path='')
 app.config['SECRET_KEY'] = os.getenv('APP_SECRET_KEY')
 
 import server.db.books
@@ -11,16 +11,20 @@ import server.db.authors
 
 @app.route('/')
 def index():
+    print("inside /")
     return app.send_static_file('index.html')
 
 #catch all requests that backend server has nothing to do
 #send them index.html
-@app.route('/', defaults={'path1': '', 'path2': ''})
-@app.route('/<path:path1>', defaults={'path2': ''})
-@app.route('/<path:path1>/<path:path2>')
-def catch_all(path1, path2):
-    return app.send_static_file('index.html')
+@app.route('/', defaults={'path': ''})
+@app.route('/<string:path>')
+@app.route('/<path:path>')
+def catch_all(path):
+    print("inside catch all")
+    if os.path.isfile('app/public/' + path):
+        return send_from_directory('client/build', path)
 
+    return app.send_static_file("index.html")
 
 @app.after_request
 def apply_caching(response):
