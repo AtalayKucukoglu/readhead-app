@@ -6,3 +6,4 @@
 __pycache__
 NOTE*
 server/db/db_info.py
+config_app.py

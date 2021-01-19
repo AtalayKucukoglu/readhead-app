@@ -6,9 +6,9 @@ export default function initApp() {
 }
 
 
-
 async function setAxiosDefaults() {
-  axios.defaults.baseURL = 'http://localhost:5000/api';
+  // axios.defaults.baseURL = 'http://localhost:5000/api';
+  axios.defaults.baseURL = 'https://readhead.herokuapp.com/api';
   // get jwt token from local storage 
   const jwtToken = window.localStorage.getItem("readhead-jwtToken");
   console.log("initApp local storage token: ", jwtToken)
