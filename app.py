@@ -16,9 +16,9 @@ def index():
 
 #catch all requests that backend server has nothing to do
 #send them index.html
-@app.route('/', defaults={'path1': '', 'path2': ''})
-@app.route('/<path:path1>', defaults={'path2': ''})
-@app.route('/<path:path1>/<path:path2>')
+@app.route('/', defaults={'path': ''})
+@app.route('/<string:path>')
+@app.route('/<path:path>')
 def catch_all(path):
     print("inside catch all")
     if os.path.isfile('app/public/' + path):
