@@ -1,4 +1,4 @@
-import { CircularProgress, Grid, Link, Typography } from '@material-ui/core'
+import { CircularProgress, Link, Typography } from '@material-ui/core'
 import { Alert } from '@material-ui/lab'
 import React, { Component } from 'react'
 import { getBookById } from '../services/bookServices'
@@ -64,7 +64,7 @@ export default class BookPage extends Component {
         <Typography variant='h3'>{title}</Typography>
         <Typography className='cursor-pointer' component={Link} color='inherit' onClick={() => this.props.history.push('/authors/' + author_id)}  variant='h4'>By {name}</Typography>
         <Typography variant='h5'>{pages} pages</Typography>
-        <Typography variant='h6'>Published at: {publish_date} {publish_place}}</Typography>
+        <Typography variant='h6'>Published at: {publish_date} {publish_place}</Typography>
         <Typography variant='h6'>Publisher: {publisher || "unknown"}</Typography>
         <BookForm mode='update' book={this.state.book} title='Edit Book' style={{color: green[500]}} text='Edit Book' />
         <hr/>
