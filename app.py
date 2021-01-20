@@ -9,11 +9,6 @@ import server.db.books
 import server.db.users
 import server.db.authors
 
-@app.route('/')
-def index():
-    print("inside /")
-    return app.send_static_file('index.html')
-
 #catch all requests that backend server has nothing to do
 #send them index.html
 @app.route('/', defaults={'path': ''})
