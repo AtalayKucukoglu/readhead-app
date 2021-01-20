@@ -2,7 +2,7 @@ from flask import Flask, jsonify, send_from_directory
 from server.db.connection import db_connect
 import os
 
-app = Flask(__name__, static_folder='client/public', static_url_path='')
+app = Flask(__name__, static_folder='client/build', static_url_path='')
 app.config['SECRET_KEY'] = os.getenv('APP_SECRET_KEY')
 
 import server.db.books
@@ -17,7 +17,7 @@ import server.db.authors
 def catch_all(path):
     print("inside catch all")
     if os.path.isfile('app/public/' + path):
-        return send_from_directory('client/public', path)
+        return send_from_directory('client/build', path)
 
     return app.send_static_file("index.html")
 
