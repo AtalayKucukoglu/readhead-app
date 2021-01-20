@@ -11,12 +11,11 @@ import server.db.authors
 
 #catch all requests that backend server has nothing to do
 #send them index.html
-@app.route('/', defaults={'path': ''})
-@app.route('/<string:path>')
-@app.route('/<path:path>')
-def catch_all(path):
-    print("inside catch all")
-    if os.path.isfile('app/public/' + path):
+@app.route('/', defaults={'path1': '', 'path2': ''})
+@app.route('/<path:path1>', defaults={'path2': ''})
+@app.route('/<path:path1>/<path:path2>')
+def catch_all(path1, path2):
+    if os.path.isfile('client/build/' + path1 + path2):
         return send_from_directory('client/build', path)
 
     return app.send_static_file("index.html")
