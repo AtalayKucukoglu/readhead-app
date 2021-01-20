@@ -49,9 +49,9 @@ def create_book():
         return jsonify({'status': False, 'message': 'Author id is not valid.' })
     # author id is valid here
     # create the book
-    statement = """insert into books (title, pages, publish_date)
-                            values (%s, %s, %s) returning book_id;"""
-    params = (data['title'], data['pages'], data['publish_date'])
+    statement = """insert into books (title, pages, publish_date, publish_place, publisher)
+                            values (%s, %s, %s, %s, %s) returning book_id;"""
+    params = (data['title'], data['pages'], data['publish_date'], data['publish_place'], data['publisher'])
     book = execute_statement(statement, params, True, False)
     print("---------------------")
     print(book)

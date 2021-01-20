@@ -58,13 +58,14 @@ export default class BookPage extends Component {
 
   renderBook = () => {
     if (!this.state.book) return null
-    const { book_id, title, publish_date, pages, name, author_id } = this.state.book
+    const { book_id, title, publish_date, pages, name, author_id, publish_place, publisher } = this.state.book
     return (
       <div key={book_id}>
         <Typography variant='h3'>{title}</Typography>
         <Typography className='cursor-pointer' component={Link} color='inherit' onClick={() => this.props.history.push('/authors/' + author_id)}  variant='h4'>By {name}</Typography>
         <Typography variant='h5'>{pages} pages</Typography>
-        <Typography variant='h6'>Published at: {publish_date}</Typography>
+        <Typography variant='h6'>Published at: {publish_date} {publish_place}}</Typography>
+        <Typography variant='h6'>Publisher: {publisher || "unknown"}</Typography>
         <BookForm mode='update' book={this.state.book} title='Edit Book' style={{color: green[500]}} text='Edit Book' />
         <hr/>
         <DeleteModalButton mode='book' item={this.state.book} title='Confirm Delete' text='Delete This Book' history={this.props.history} />

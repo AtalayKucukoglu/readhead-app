@@ -15,7 +15,7 @@ export default class BookForm extends Component {
       isSaving: false,
       authorInput: '',
       authorResults: [],
-      author: null, 
+      author: null,
     }
   }
 
@@ -25,7 +25,7 @@ export default class BookForm extends Component {
       const { author_id, name } = this.props.book
       this.setState({
         ...this.props.book,
-        author: {author_id, name}
+        author: { author_id, name }
       })
     }
   }
@@ -71,12 +71,16 @@ export default class BookForm extends Component {
           value={this.state.pages} onChange={this.handleChange} />
         <TextField required className='mb-1' InputLabelProps={{ shrink: true }} variant='outlined' label='Publish Date'
           type='date' name='publish_date' value={this.state.publish_date} onChange={this.handleChange} />
+        <TextField className='mb-1' name='publish_place' label='Publish Place' type='text' variant='outlined'
+          value={this.state.publish_place} onChange={this.handleChange} />
+        <TextField className='mb-1' name='publisher' label='Publisher' type='text' variant='outlined'
+          value={this.state.publisher} onChange={this.handleChange} />
       </div>
     )
   }
 
   searchAuthors = async (input) => {
-    if(input.length < 4) {
+    if (input.length < 4) {
       this.setState({ authorResults: [] })
     }
     const result = await searchAuthorsByName(input)
@@ -86,7 +90,7 @@ export default class BookForm extends Component {
   }
 
   handleAuthorInputChange = (input) => {
-    this.setState({authorInput: input});
+    this.setState({ authorInput: input });
     this.searchAuthors(input)
   }
 
@@ -97,13 +101,13 @@ export default class BookForm extends Component {
   }
 
   handleSave = async () => {
-    const { title, publish_date, pages, book_id , author_id, author} = this.state
+    const { title, publish_date, pages, book_id, author_id, author, publish_place, publisher } = this.state
     const { mode } = this.props
     this.setState({ isSaving: true })
-    let data = { title, publish_date, pages }; // only book related data
+    let data = { title, publish_date, pages, publish_place, publisher }; // only book related data
     // if author is changed, add author_id to the data
     // backend server only updates new author if author id is sent
-    if (author_id !== author.author_id) data = {...data, 'author_id': author.author_id}
+    if (author_id !== author.author_id) data = { ...data, 'author_id': author.author_id }
     const response = mode === 'update' ? await updateBook(book_id, data) : await createBook(data)
     console.log(response)
     if (response && response.status) {
