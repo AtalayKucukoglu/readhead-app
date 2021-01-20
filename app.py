@@ -16,7 +16,7 @@ import server.db.authors
 @app.route('/<path:path1>/<path:path2>')
 def catch_all(path1, path2):
     if os.path.isfile('client/build/' + path1 + path2):
-        return send_from_directory('client/build', path)
+        return send_from_directory('client/build', path1 + path2)
 
     return app.send_static_file("index.html")
 
